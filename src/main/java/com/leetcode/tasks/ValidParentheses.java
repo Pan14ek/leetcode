@@ -1,5 +1,10 @@
 package com.leetcode.tasks;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Stack;
+
 public class ValidParentheses {
 
     public static void main(String[] args) {
@@ -8,38 +13,26 @@ public class ValidParentheses {
     }
 
     public boolean isValid(String s) {
-        int sum = 0;
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '(') {
-                sum += 1;
-            }
-            if (s.charAt(i) == ')') {
-                if (s.length() > 1 && i != 0 && s.charAt(i - 1) == '(' || i % 2 != 0) {
-                    sum -= 1;
+        Stack<Character> brackets = new Stack<>();
+        Map<Character, Character> bracketMap = getBracketMap();
+        for (Character character : s.toCharArray()) {
+            if (bracketMap.containsValue(character)) {
+                if (brackets.isEmpty() || !Objects.equals(brackets.pop(), character)) {
+                    return false;
                 }
-            }
-            if (s.charAt(i) == '{') {
-                sum += 2;
-            }
-            if (s.charAt(i) == '}') {
-                if (s.length() > 1 && i != 0 && s.charAt(i - 1) == '{' || i % 2 != 0) {
-                    sum -= 2;
-                } else {
-                    sum -= 1;
-                }
-            }
-            if (s.charAt(i) == '[') {
-                sum += 3;
-            }
-            if (s.charAt(i) == ']') {
-                if (s.length() > 1 && i != 0 && s.charAt(i - 1) == '[' || i % 2 != 0) {
-                    sum -= 3;
-                } else {
-                    sum -= 1;
-                }
+            } else {
+                brackets.push(bracketMap.get(character));
             }
         }
-        return sum == 0;
+        return brackets.isEmpty();
+    }
+
+    private Map<Character, Character> getBracketMap() {
+        Map<Character, Character> bracketMap = new HashMap<>();
+        bracketMap.put('[', ']');
+        bracketMap.put('{', '}');
+        bracketMap.put('(', ')');
+        return bracketMap;
     }
 
 }
